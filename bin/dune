@@ -1,0 +1,7 @@
+(executable
+ (public_name overlock)
+ (name main)
+ (libraries overlock lwt))
+
+(copy_files ../assets/*.dll)
+(copy_files ../assets/*.pem)

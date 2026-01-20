@@ -1,0 +1,17 @@
+# C:\Users\lukas\AppData\Local\opam\overlock\bin\dune.exe exec bin/main.exe
+# OCAMLPARAM: unset
+# Shared cache: enabled-except-user-rules
+# Shared cache location:
+# C:\Users\lukas\AppData\Local\Microsoft\Windows\INetCache\dune\db
+# Workspace root: "C:\\Users\\lukas\\Documents\\overlock"
+# Auto-detected concurrency: 20
+# Dune context:
+#  { name = "default"
+#  ; kind = "default"
+#  ; profile = Dev
+#  ; merlin = true
+#  ; fdo_target_exe = None
+#  ; build_dir = In_build_dir "default"
+#  ; instrument_with = []
+#  }
+$ C:\Users\lukas\AppData\Local\opam\overlock\bin\ocamlc.opt.exe -config > C:\Users\lukas\AppData\Local\Temp\dune_09e261_output

@@ -1,0 +1,6 @@
+(include_subdirs qualified)
+
+(library
+ (name overlock)
+ (libraries lwt curl yojson)
+ (wrapped true))
