@@ -3,5 +3,4 @@
  (name main)
  (libraries overlock lwt))
 
-(copy_files ../assets/*.dll)
-(copy_files ../assets/*.pem)
+ (copy_files ../assets/*.pem)

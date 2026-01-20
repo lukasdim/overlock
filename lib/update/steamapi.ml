@@ -20,7 +20,7 @@ let get_req (url : string) : string =
   Curl.set_url c url;
   Curl.set_followlocation c true;
 
-  let exe_dir = Filename.dirname Sys.executable_name in
+  let exe_dir = Filename.dirname Sys.executable_name in 
   let ca_path = Filename.concat exe_dir "cacert.pem" in
   Curl.set_cainfo c ca_path;
 
@@ -66,3 +66,19 @@ let get_playerdata (steamid : Domain.Types.steamid3) : playerData =
   let mapped_kda : kda list HeroMap.t = build_kda_map heroes kdas in
   
   create_playerdata steamid age mapped_kda 
+
+let rec take n xs =
+  match n, xs with
+  | 0, _ -> []
+  | _, [] -> []
+  | n, x :: xs -> x :: take (n - 1) xs
+
+let sum_kda_list_first_n (n : int) (xs : kda list) : int * int * int =
+  xs
+  |> take n
+  |> List.fold_left
+       (fun (k_sum, d_sum, a_sum) (k : kda) ->
+          ( k_sum + k.kills.kills
+          , d_sum + k.deaths.deaths
+          , a_sum + k.assists ))
+       (0, 0, 0)
