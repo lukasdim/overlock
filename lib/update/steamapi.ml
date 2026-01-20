@@ -82,3 +82,14 @@ let sum_kda_list_first_n (n : int) (xs : kda list) : int * int * int =
           , d_sum + k.deaths.deaths
           , a_sum + k.assists ))
        (0, 0, 0)
+
+let get_most_recent_game (steamid : Domain.Types.steamid3) : Yojson.Basic.t option = 
+  let json_str = get_req ("https://api.deadlock-api.com/v1/players/" ^ string_of_steamid64 steamid ^ "/match-history") in
+  try
+    let json = convert_to_json json_str in
+    let list_json = to_list json in
+    match list_json with
+      | [] -> None
+      | x :: list_json -> Some x
+  with
+  | Yojson.Json_error _ -> None
