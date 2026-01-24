@@ -61,35 +61,9 @@ let get_playerdata (steamid : Domain.Types.steamid3) : playerData =
   let heroes : hero list = List.map match_hero hero_ids in
   let age = last_opt (get_json_ints "start_time" json) in
   let age = Option.value age ~default:0 in
-
+  let match_list = Transport.Mapper.map_match_data json in
   let kdas : kda list = map3_shortest create_kda k d a in
   let mapped_kda : kda list HeroMap.t = build_kda_map heroes kdas in
   
-  create_playerdata steamid age mapped_kda 
+  create_playerdata steamid age mapped_kda match_list
 
-let rec take n xs =
-  match n, xs with
-  | 0, _ -> []
-  | _, [] -> []
-  | n, x :: xs -> x :: take (n - 1) xs
-
-let sum_kda_list_first_n (n : int) (xs : kda list) : int * int * int =
-  xs
-  |> take n
-  |> List.fold_left
-       (fun (k_sum, d_sum, a_sum) (k : kda) ->
-          ( k_sum + k.kills.kills
-          , d_sum + k.deaths.deaths
-          , a_sum + k.assists ))
-       (0, 0, 0)
-
-let get_most_recent_game (steamid : Domain.Types.steamid3) : Yojson.Basic.t option = 
-  let json_str = get_req ("https://api.deadlock-api.com/v1/players/" ^ string_of_steamid64 steamid ^ "/match-history") in
-  try
-    let json = convert_to_json json_str in
-    let list_json = to_list json in
-    match list_json with
-      | [] -> None
-      | x :: list_json -> Some x
-  with
-  | Yojson.Json_error _ -> None

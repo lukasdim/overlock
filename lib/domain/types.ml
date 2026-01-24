@@ -13,7 +13,8 @@ type playerDescriptors =
   | Shy (* Low Deaths, Low Kills*)
   | Support (* Low kills, High Assists*)
   | Feeder (* High Deaths*)
-  | Unkillable (* Low Deaths *)
+  | Unkillable (* Extremely Low Deaths *)
+  | LowDeaths (* Low Deaths*)
 
 type kill_info = {
   kills : int;
@@ -45,19 +46,27 @@ type player = {
 
 let create_player s n r h d k i= { steamid = s; name = n; rank = r; hero = h; description = d;kda = k; items=i }
 
-(*
-MATCH TYPES
-*)
-
-type matchStatus =
-  | Ongoing
-  | Victory
-  | Defeat
-
 type matchData = {
-  players : player list;
-  status : matchStatus;
-  start_time : int
+  hero_id : int; (* Transport.Mapper *)
+  hero_level : int;
+  game_mode : int; (* 1 = Normal 6v6 , 4 = Brawl gamemode*)
+  match_id : int;
+  player_team : int; (* 0 or 1*)
+  player_kills : int; (* use this instead of kda because kda is used for realtime updates mid-game. this is just history *)
+  player_deaths : int;
+  player_assists : int;
+  denies : int; (* # of times stole souls from enemy minions *)
+  abandoned_time_s : int option; (* # Seconds into game if abandoned. Maybe useful sometime in the future. sometimes null or 0, check both *)
+  match_duration_s : int option;(* # Seconds of game duration *)
+  match_result : int; (* 0 or 1. Not sure which is win and which is lose. *)
+  objectives_mask_team0 : int; (* ??, always returns 65093 if it's a brawl match *)
+  objectives_mask_team1 : int; (* ??, always returns 65093 if it's a brawl match *)
+  brawl_score_team0 : int option; (* null if not in brawl*)
+  brawl_score_team1 : int option; (* null if not in brawl*)
+  brawl_avg_round_time_s : int option;
+  last_hits: int; (* ?? *)
+  net_worth: int; (* souls total *)
+  start_time : int; (* Unix timestamp *)
 }
 
 module Hero = struct
@@ -92,7 +101,7 @@ type playerData = {
   steamid : steamid3;
   age : int; (* Unix timestamp of their first match *)
   all_kda : kda list HeroMap.t; (* Seperated for easy playerDescriptors Calculations*) 
-  (*all_matches : matchData; remove for now to just get testing.*) 
+  all_matches : matchData list;
 }
 
-let create_playerdata s age kda = { steamid = s; age = age; all_kda = kda }
+let create_playerdata s age kda m = { steamid = s; age = age; all_kda = kda; all_matches = m }
